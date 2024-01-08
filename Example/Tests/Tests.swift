@@ -1,28 +1,50 @@
 import XCTest
 import NL
 
-class Tests: XCTestCase {
+class Tests: XCTestCase, HTTPClient {
+    
+    var compose: Composer!
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        NLConfig.shared.baseUrl = "https://dummy.restapiexample.com/api/v1/employees"
+        self.compose = Composer()
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        self.compose = nil
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure() {
-            // Put the code you want to measure the time of here.
+    func test_call() {
+        Task {
+            let response = await self.getResponse()
+            switch response {
+            case .success(let success):
+                XCTAssertEqual(success.status ?? "", "Success")
+            case .failure(let networkResponseStatus):
+                XCTFail()
+            case .sessionFail(let string):
+                XCTFail()
+            }
         }
     }
     
+    private func getResponse() async -> FinalResponse<SomeDecorder> {
+        let compose = Composer()
+        return await self.client.sendRequest(compose: compose, decoder: SomeDecorder.self)
+    }
+}
+
+struct Composer: HttpsRequestComposeProtocol {
+    var method: NetworkMethod {
+        .get
+    }
+    
+    var params: Encodable?
+}
+
+struct SomeDecorder: Decodable {
+    let status: String?
+    let message: String?
 }

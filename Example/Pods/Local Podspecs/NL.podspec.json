@@ -1,9 +1,9 @@
 {
   "name": "NL",
-  "version": "0.1.0",
-  "summary": "A short description of NL.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/SreelekhN/NL",
+  "version": "0.1.1",
+  "summary": "NL cocoapod support.",
+  "description": "NL is a network layer built on top of url session which can help you implement rest/graphql api calls",
+  "homepage": "https://github.com/SreelekhN/NL-Vamichuz",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,11 +12,14 @@
     "SreelekhN": "sreelekhn@gmail.com"
   },
   "source": {
-    "git": "https://github.com/SreelekhN/NL.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/SreelekhN/NL-Vamichuz.git",
+    "tag": "0.1.1"
   },
+  "social_media_url": "https://www.linkedin.com/in/sreelekhn",
   "platforms": {
-    "ios": "10.0"
+    "ios": "16.0"
   },
-  "source_files": "NL/Classes/**/*"
+  "swift_versions": "5.2",
+  "source_files": "Sources/NL/**/*",
+  "swift_version": "5.2"
 }
