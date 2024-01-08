@@ -13,19 +13,13 @@ protocol AuthorizationHeaderProtocol {
 struct AuthorizationHeader: AuthorizationHeaderProtocol {
     
     func getMultiPartFormHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders {
-        let auth = [
-            "Content-Type": "image/png",
-            "X-Shopify-Storefront-Access-Token": "b49cf29354f6c92ad4b02b9fb2b60b03"
-        ]
+        let auth = NLConfig.shared.multiPartFormHeaders
         let combined = auth.merging(compose.header ?? [:]) { (_, new) in new }
         return combined
     }
     
     func getHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders {
-        let auth = [
-            "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": "b49cf29354f6c92ad4b02b9fb2b60b03"
-        ]
+        let auth = NLConfig.shared.headers
         let combined = auth.merging(compose.header ?? [:]) { (_, new) in new }
         return combined
     }

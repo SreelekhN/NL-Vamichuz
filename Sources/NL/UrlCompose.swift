@@ -24,7 +24,7 @@ public struct QuerySendable: Encodable {
 
 public extension HttpsRequestComposeProtocol {
     var url: String {
-        return ApiBase.baseUrl
+        return NLConfig.shared.baseUrl
     }
     
     var header: SessionHeaders {
