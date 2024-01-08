@@ -10,6 +10,7 @@ protocol AuthorizationHeaderProtocol {
     func getHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders
     func getMultiPartFormHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders
 }
+
 struct AuthorizationHeader: AuthorizationHeaderProtocol {
     
     func getMultiPartFormHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders {
