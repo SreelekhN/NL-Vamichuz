@@ -9,12 +9,12 @@ import Foundation
 public typealias SessionHeaders = [String: String]?
 public typealias PARAMS = [String: Any]?
 
-protocol UrlSessionLayerprotocol {
+public protocol UrlSessionLayerprotocol {
     func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
     func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
 }
 
-struct UrlSessionLayer: UrlSessionLayerprotocol {
+public struct UrlSessionLayer: UrlSessionLayerprotocol {
     
     private let sessionDelegate: SessionCallProrocol
     private let decoderDelegate: SessionDecoderDelegate
@@ -30,14 +30,14 @@ struct UrlSessionLayer: UrlSessionLayerprotocol {
         self.requestFormer = requestFormer
     }
     
-    func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
+    public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
         let urlRequest = self.requestFormer.getUrlRequest(compose: compose)
         let sessionResponse = await self.sessionDelegate.request(urlRequest: urlRequest)
         let respose = self.decoderDelegate.decodeData(response: sessionResponse, decoder: decoder)
         return respose
     }
     
-    func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
+    public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
         let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose)
         let sessionResponse = await self.sessionDelegate.request(urlRequest: urlRequest)
         guard sessionResponse.0 != nil else {

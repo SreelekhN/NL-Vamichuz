@@ -7,7 +7,7 @@
 //
 
 import Foundation
-enum NetworkResponseStatus: String, Error {
+public enum NetworkResponseStatus: String, Error {
     case success
     case authenticationError = "You need to be authenticated first."
     case badRequest = "Bad request"

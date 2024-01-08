@@ -6,7 +6,7 @@
 //
 
 import Foundation
-enum NetworkMethod: String {
+public enum NetworkMethod: String {
     case connect = "CONNECT"
     case get = "GET"
     case post = "POST"

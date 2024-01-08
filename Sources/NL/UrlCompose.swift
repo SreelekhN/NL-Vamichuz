@@ -6,7 +6,7 @@
 //
 
 import Foundation
-protocol HttpsRequestComposeProtocol {
+public protocol HttpsRequestComposeProtocol {
     var url: String { get }
     var method: NetworkMethod { get }
     var params: Encodable? { get }
@@ -14,11 +14,15 @@ protocol HttpsRequestComposeProtocol {
     var data: Data? { get }
 }
 
-struct QuerySendable: Encodable {
+public struct QuerySendable: Encodable {
     let query: String?
+    
+    public init(query: String?) {
+        self.query = query
+    }
 }
 
-extension HttpsRequestComposeProtocol {
+public extension HttpsRequestComposeProtocol {
     var url: String {
         return ApiBase.baseUrl
     }

@@ -8,12 +8,12 @@
 import Foundation
 struct DefaultEncodable: Encodable {}
 
-protocol HTTPClient {
+public protocol HTTPClient {
     func serverRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
     func amazonUploadFileRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
 }
 
-extension HTTPClient {
+public extension HTTPClient {
     
     var client: UrlSessionLayerprotocol {
         return UrlSessionLayer()

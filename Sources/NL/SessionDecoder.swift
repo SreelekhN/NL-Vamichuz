@@ -6,7 +6,7 @@
 //  Copyright © 2022 developer. All rights reserved.
 //
 
-enum FinalResponse<success: Decodable>  {
+public enum FinalResponse<success: Decodable>  {
     case success(success)
     case failure(NetworkResponseStatus)
     case sessionFail(String)
