@@ -22,15 +22,19 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
     
     func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest {
         let headers = self.header.getHeaders(compose: compose)
-        let url = compose.url.description.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlConverted = url.toUrl
-        var request = URLRequest(url: urlConverted)
+        
+        @PercentEncodingWrapper var url = compose.url
+        @PercentEncodingWrapper var trunkUrl = compose.trunkUrl
+        @PercentEncodingWrapper var urlConverted = "\(url)\(trunkUrl)"
+        
+        var request = URLRequest(url: urlConverted.toUrl)
         request.httpMethod = compose.method.rawValue
         if let headers {
             request.allHTTPHeaderFields = headers
             debugPrint("sending header = \(headers)")
         }
         debugPrint(url)
+        
         switch compose.method {
         case .post:
             if let encoded = compose.params {

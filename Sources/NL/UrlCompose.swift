@@ -8,6 +8,7 @@
 import Foundation
 public protocol HttpsRequestComposeProtocol {
     var url: String { get }
+    var trunkUrl: String { get }
     var method: NetworkMethod { get }
     var params: Encodable? { get }
     var header: SessionHeaders { get }
@@ -27,11 +28,19 @@ public extension HttpsRequestComposeProtocol {
         return NLConfig.shared.baseUrl
     }
     
+    var trunkUrl: String {
+        return ""
+    }
+    
     var header: SessionHeaders {
         return [:]
     }
     
     var data: Data? {
+        return nil
+    }
+    
+    var params: Encodable? {
         return nil
     }
 }
