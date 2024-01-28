@@ -46,7 +46,7 @@
 		21C5E1D26564EBAD17B83E4AA1796556 /* AmazonS3UploadModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AmazonS3UploadModel.swift; path = Sources/NL/AmazonS3UploadModel.swift; sourceTree = "<group>"; };
 		2375F473711B5A06A77D5C8C90C3FF9A /* Extensions+.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Extensions+.swift"; sourceTree = "<group>"; };
 		2F08F60F8C465BE1397A4919443D2A2D /* UrlSessionLayer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UrlSessionLayer.swift; path = Sources/NL/UrlSessionLayer.swift; sourceTree = "<group>"; };
-		42CA3C39E093DE3CC9702E6A408D80F5 /* Pods-NL_Tests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-NL_Tests"; path = Pods_NL_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		42CA3C39E093DE3CC9702E6A408D80F5 /* Pods_NL_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NL_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D024813DED618A3A5A0C7FDD9A41212 /* UrlRequestFormer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UrlRequestFormer.swift; path = Sources/NL/UrlRequestFormer.swift; sourceTree = "<group>"; };
 		52CCB6DE7959044B3C576FAF4E88C15B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		54E13C26306D929D512168396C1D872A /* Authorization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Authorization.swift; path = Sources/NL/Authorization.swift; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B614943F25495A11C714D3CC579F70B9 /* Pods-NL_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-NL_Tests.modulemap"; sourceTree = "<group>"; };
 		B6D6A8A88AA552660930A1718D59E91B /* Pods-NL_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-NL_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		B839725B4AC9FFC60AC930BFA0861132 /* NL */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = NL; path = NL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B839725B4AC9FFC60AC930BFA0861132 /* NL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA19705C3747153854CE38F76BCBC940 /* NL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "NL-Info.plist"; sourceTree = "<group>"; };
 		BB6BE1F2239CDBBAD3CED99602688092 /* NL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = NL.debug.xcconfig; sourceTree = "<group>"; };
 		C29DE42908EDB80B438A1D77CC79D94A /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -127,8 +127,8 @@
 		6B93DB1437230F5F253CEAC85BF81745 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B839725B4AC9FFC60AC930BFA0861132 /* NL */,
-				42CA3C39E093DE3CC9702E6A408D80F5 /* Pods-NL_Tests */,
+				B839725B4AC9FFC60AC930BFA0861132 /* NL.framework */,
+				42CA3C39E093DE3CC9702E6A408D80F5 /* Pods_NL_Tests.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,7 +264,7 @@
 			);
 			name = "Pods-NL_Tests";
 			productName = Pods_NL_Tests;
-			productReference = 42CA3C39E093DE3CC9702E6A408D80F5 /* Pods-NL_Tests */;
+			productReference = 42CA3C39E093DE3CC9702E6A408D80F5 /* Pods_NL_Tests.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FAA76F10B177B9DEA5B4327708EF30D1 /* NL */ = {
@@ -282,7 +282,7 @@
 			);
 			name = NL;
 			productName = NL;
-			productReference = B839725B4AC9FFC60AC930BFA0861132 /* NL */;
+			productReference = B839725B4AC9FFC60AC930BFA0861132 /* NL.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -390,7 +390,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-NL_Tests/Pods-NL_Tests-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-NL_Tests/Pods-NL_Tests.modulemap";
@@ -424,7 +424,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/NL/NL-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/NL/NL-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/NL/NL.modulemap";
 				PRODUCT_MODULE_NAME = NL;
@@ -490,7 +490,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -518,7 +518,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-NL_Tests/Pods-NL_Tests-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-NL_Tests/Pods-NL_Tests.modulemap";
@@ -553,7 +553,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/NL/NL-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/NL/NL-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/NL/NL.modulemap";
 				PRODUCT_MODULE_NAME = NL;
@@ -621,7 +621,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
