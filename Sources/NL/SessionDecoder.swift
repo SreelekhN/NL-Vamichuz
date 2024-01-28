@@ -8,7 +8,7 @@
 
 public enum FinalResponse<success: Decodable>  {
     case success(success)
-    case failure(NetworkResponseStatus)
+    case failure(NetworkResponseStatus, success?)
     case sessionFail(String)
 }
 
@@ -28,21 +28,18 @@ struct SessionDecoder: SessionDecoderDelegate {
             }
             return .sessionFail(errors.localizedDescription)
         }
-        print(data.prettyPrintedJSONString())
+        debugPrint(data.prettyPrintedJSONString())
         let result = self.handleNetworkResponse(response: urlResponse)
         switch result {
         case .success:
-            let decoder = JSONDecoder()
-            let parser = T.self
-            do {
-                let object = try decoder.decode(parser, from: data)
-                return .success(object)
-            } catch {
-                print(error)
-                return .failure(NetworkResponseStatus.unableToDecode)
+            let decoded = self.decode(data: data, decoder: decoder)
+            guard let decoded else {
+                return .failure(NetworkResponseStatus.unableToDecode, nil)
             }
+            return .success(decoded)
         case .failure(let error):
-            return .failure(error)
+            let decoded = self.decode(data: data, decoder: decoder)
+            return .failure(error, decoded)
         }
     }
     
@@ -53,6 +50,18 @@ struct SessionDecoder: SessionDecoderDelegate {
         case 501...599: return .failure(NetworkResponseStatus.badRequest)
         case 600: return .failure(NetworkResponseStatus.outdated)
         default: return .failure(NetworkResponseStatus.failed)
+        }
+    }
+    
+    private func decode<T: Decodable>(data: Data, decoder: T.Type) -> T? {
+        let decoder = JSONDecoder()
+        let parser = T.self
+        do {
+            let object = try decoder.decode(parser, from: data)
+            return object
+        } catch {
+            debugPrint(error)
+            return nil
         }
     }
 }

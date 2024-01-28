@@ -41,7 +41,7 @@ public struct UrlSessionLayer: UrlSessionLayerprotocol {
         let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose)
         let sessionResponse = await self.sessionDelegate.request(urlRequest: urlRequest)
         guard sessionResponse.0 != nil else {
-            return .failure(NetworkResponseStatus.authenticationError)
+            return .failure(NetworkResponseStatus.authenticationError, nil)
         }
         let object = AmazonS3UploadModel(code: 200)
         return .success(object as! T)
