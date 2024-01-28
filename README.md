@@ -29,6 +29,8 @@ struct SearchCompose: HttpsRequestComposeProtocol {
         return .post
     }
     
+    // Method trunk url update
+    
     var params: Encodable?
     
     init(searchText: String, curser: String) {
