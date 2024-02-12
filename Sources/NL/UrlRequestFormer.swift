@@ -27,9 +27,9 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
 //        @PercentEncodingWrapper
 //        @PercentEncodingWrapper
         
-        var url = compose.url
-        var trunkUrl = compose.trunkUrl
-        var urlConverted = "\(url)\(trunkUrl)"
+        let url = compose.url
+        let trunkUrl = compose.trunkUrl
+        let urlConverted = "\(url)\(trunkUrl)"
         
         var request = URLRequest(url: urlConverted.toUrl)
         request.httpMethod = compose.method.rawValue
