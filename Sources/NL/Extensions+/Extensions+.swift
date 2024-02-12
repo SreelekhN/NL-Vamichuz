@@ -8,8 +8,8 @@
 import Foundation
 extension String {
     var toUrl: URL {
-        let query = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let fileUrl = URL(string: query)
+        // let query = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let fileUrl = URL(string: self)
         return fileUrl ?? URL(string: "")!
     }
 }
