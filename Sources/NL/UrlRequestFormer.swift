@@ -23,9 +23,13 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
     func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest {
         let headers = self.header.getHeaders(compose: compose)
         
-        @PercentEncodingWrapper var url = compose.url
-        @PercentEncodingWrapper var trunkUrl = compose.trunkUrl
-        @PercentEncodingWrapper var urlConverted = "\(url)\(trunkUrl)"
+//        @PercentEncodingWrapper
+//        @PercentEncodingWrapper
+//        @PercentEncodingWrapper
+        
+        var url = compose.url
+        var trunkUrl = compose.trunkUrl
+        var urlConverted = "\(url)\(trunkUrl)"
         
         var request = URLRequest(url: urlConverted.toUrl)
         request.httpMethod = compose.method.rawValue
@@ -52,7 +56,8 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
     
     func getAmazonS3FileRequest(compose: HttpsRequestComposeProtocol) -> URLRequest {
         let headers = self.header.getHeaders(compose: compose)
-        let url = compose.url.description.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let url = compose.url.description
+            //.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let urlConverted = url.toUrl
         
         var request = URLRequest(url: urlConverted)

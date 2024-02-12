@@ -6,20 +6,20 @@
 //
 
 import Foundation
-@propertyWrapper
-struct PercentEncodingWrapper {
-    private var string: String
-    
-    init(wrappedValue: String) {
-        self.string = wrappedValue
-    }
-    
-    var wrappedValue: String {
-        get {
-            self.string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        }
-        set {
-            self.string = newValue
-        }
-    }
-}
+//@propertyWrapper
+//struct PercentEncodingWrapper {
+//    private var string: String
+//    
+//    init(wrappedValue: String) {
+//        self.string = wrappedValue
+//    }
+//    
+//    var wrappedValue: String {
+//        get {
+//            self.string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+//        }
+//        set {
+//            self.string = newValue
+//        }
+//    }
+//}
