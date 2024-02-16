@@ -31,14 +31,18 @@ public struct UrlSessionLayer: UrlSessionLayerprotocol {
     }
     
     public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
-        let urlRequest = self.requestFormer.getUrlRequest(compose: compose)
+        guard let urlRequest = self.requestFormer.getUrlRequest(compose: compose) else {
+            return .failure(NetworkResponseStatus.badRequest, nil)
+        }
         let sessionResponse = await self.sessionDelegate.request(urlRequest: urlRequest)
         let respose = self.decoderDelegate.decodeData(response: sessionResponse, decoder: decoder)
         return respose
     }
     
     public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
-        let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose)
+        guard let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose) else {
+            return .failure(NetworkResponseStatus.badRequest, nil)
+        }
         let sessionResponse = await self.sessionDelegate.request(urlRequest: urlRequest)
         guard sessionResponse.0 != nil else {
             return .failure(NetworkResponseStatus.authenticationError, nil)

@@ -8,8 +8,8 @@
 
 import Foundation
 protocol UrlRequestFormerProtocol {
-    func getAmazonS3FileRequest(compose: HttpsRequestComposeProtocol) -> URLRequest
-    func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest
+    func getAmazonS3FileRequest(compose: HttpsRequestComposeProtocol) -> URLRequest?
+    func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest?
 }
 
 struct UrlRequestFormer: UrlRequestFormerProtocol {
@@ -20,18 +20,13 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         self.header = header
     }
     
-    func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest {
+    func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest? {
         let headers = self.header.getHeaders(compose: compose)
-        
-//        @PercentEncodingWrapper
-//        @PercentEncodingWrapper
-//        @PercentEncodingWrapper
-        
         let url = compose.url
         let trunkUrl = compose.trunkUrl
         let urlConverted = "\(url)\(trunkUrl)"
-        
-        var request = URLRequest(url: urlConverted.toUrl)
+        guard let url = urlConverted.toUrl else { return nil }
+        var request = URLRequest(url: url)
         request.httpMethod = compose.method.rawValue
         if let headers {
             request.allHTTPHeaderFields = headers
@@ -54,12 +49,10 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         return request
     }
     
-    func getAmazonS3FileRequest(compose: HttpsRequestComposeProtocol) -> URLRequest {
+    func getAmazonS3FileRequest(compose: HttpsRequestComposeProtocol) -> URLRequest? {
         let headers = self.header.getHeaders(compose: compose)
         let url = compose.url.description
-            //.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let urlConverted = url.toUrl
-        
+        guard let urlConverted = url.toUrl else { return nil }
         var request = URLRequest(url: urlConverted)
         request.httpMethod = compose.method.rawValue
         request.httpBody = compose.data
