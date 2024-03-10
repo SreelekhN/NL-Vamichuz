@@ -43,6 +43,10 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
                 } catch {}
                 printEncode(decodable: encoded)
             }
+            
+            if let data = compose.data {
+                request.httpBody = data
+            }
         default:
             break
         }
