@@ -15,9 +15,11 @@ protocol UrlRequestFormerProtocol {
 struct UrlRequestFormer: UrlRequestFormerProtocol {
     
     private let header: AuthorizationHeaderProtocol
+    private let isUploadTask: Bool
     
-    init(header: AuthorizationHeaderProtocol = AuthorizationHeader()) {
+    init(header: AuthorizationHeaderProtocol = AuthorizationHeader(), isUploadTask: Bool) {
         self.header = header
+        self.isUploadTask = isUploadTask
     }
     
     func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest? {
@@ -28,6 +30,7 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         guard let url = urlConverted.toUrl else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = compose.method.rawValue
+        request.timeoutInterval = self.getTimeout()
         if let headers {
             request.allHTTPHeaderFields = headers
             debugPrint("sending header = \(headers)")
@@ -75,5 +78,10 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
             guard let data = try? encoder.encode(decodable), let output = String(data: data, encoding: .utf8) else { return }
             debugPrint("sending json = \(output)")
         }
+    }
+    
+    private func getTimeout() -> Double {
+        let now = self.isUploadTask ? NLConfig.shared.uploadTimeout : NLConfig.shared.regularTimeOut
+        return now * 60.0
     }
 }

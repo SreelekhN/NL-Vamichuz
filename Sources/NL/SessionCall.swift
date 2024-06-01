@@ -10,6 +10,7 @@ import Foundation
 
 protocol SessionCallProrocol {
     func dataRequest(urlRequest: URLRequest) async -> SessionResponce
+    func isUploadTask() -> Bool
 }
 
 public protocol UploadProgressBinder: AnyObject {
@@ -33,6 +34,10 @@ final class SessionCall: NSObject, SessionCallProrocol {
             print(error.localizedDescription)
             return (nil, error)
         }
+    }
+    
+    func isUploadTask() -> Bool {
+        return self.binder != nil
     }
 }
 

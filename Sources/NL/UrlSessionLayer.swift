@@ -22,12 +22,11 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     
     init(
         session: SessionCallProrocol,
-        decode: SessionDecoderDelegate = SessionDecoder(),
-        requestFormer: UrlRequestFormerProtocol = UrlRequestFormer()
+        decode: SessionDecoderDelegate = SessionDecoder()
     ) {
         self.sessionDelegate = session
         self.decoderDelegate = decode
-        self.requestFormer = requestFormer
+        self.requestFormer = UrlRequestFormer(isUploadTask: session.isUploadTask())
     }
     
     public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {

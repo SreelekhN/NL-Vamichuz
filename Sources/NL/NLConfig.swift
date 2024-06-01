@@ -14,4 +14,6 @@ public final class NLConfig {
     public var baseUrl = ""
     public var headers: [String: String] = [:]
     public var multiPartFormHeaders: [String: String] = [:]
+    public var regularTimeOut = 1.0
+    public var uploadTimeout = 30.0
 }
