@@ -9,15 +9,19 @@ import Foundation
 struct DefaultEncodable: Encodable {}
 
 public protocol HTTPClient {
-    var client: UrlSessionLayerprotocol { get }
+    var progress: UploadProgressBinder? { get }
     func serverRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
     func amazonUploadFileRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
 }
 
 public extension HTTPClient {
     
+    var progress: UploadProgressBinder? { 
+        nil
+    }
+    
     var client: UrlSessionLayerprotocol {
-        return UrlSessionLayer(session: SessionCall(binder: nil))
+        return UrlSessionLayer(session: SessionCall(binder: self.progress))
     }
     
     func serverRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
