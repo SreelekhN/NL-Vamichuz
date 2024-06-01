@@ -12,7 +12,7 @@ protocol SessionCallProrocol {
     func dataRequest(urlRequest: URLRequest) async -> SessionResponce
 }
 
-protocol UploadProgressBinder: AnyObject {
+public protocol UploadProgressBinder: AnyObject {
     func uploadprogressFractionCompleted(progress: Double?)
 }
 
