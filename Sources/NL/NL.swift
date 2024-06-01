@@ -20,7 +20,7 @@ public extension HTTPClient {
         nil
     }
     
-    var client: UrlSessionLayerprotocol {
+    var client: UrlSessionLayerProtocol {
         return UrlSessionLayer(session: SessionCall(binder: self.progress))
     }
     

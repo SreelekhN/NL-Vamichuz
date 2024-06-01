@@ -9,12 +9,12 @@ import Foundation
 public typealias SessionHeaders = [String: String]?
 public typealias PARAMS = [String: Any]?
 
-public protocol UrlSessionLayerprotocol {
+public protocol UrlSessionLayerProtocol {
     func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
     func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
 }
 
-public struct UrlSessionLayer: UrlSessionLayerprotocol {
+public struct UrlSessionLayer: UrlSessionLayerProtocol {
     
     private let sessionDelegate: SessionCallProrocol
     private let decoderDelegate: SessionDecoderDelegate

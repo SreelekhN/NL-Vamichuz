@@ -2,7 +2,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'NL'
-  s.version          = '0.2.3'
+  s.version          = '0.2.4'
   s.summary          = 'NL cocoapod support.'
 
   s.description      = "NL is a network layer built on top of url session which can help you implement rest/graphql api calls"
