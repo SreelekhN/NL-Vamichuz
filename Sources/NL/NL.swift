@@ -9,6 +9,7 @@ import Foundation
 struct DefaultEncodable: Encodable {}
 
 public protocol HTTPClient {
+    var client: UrlSessionLayerprotocol { get }
     func serverRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
     func amazonUploadFileRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T>
 }
@@ -16,14 +17,14 @@ public protocol HTTPClient {
 public extension HTTPClient {
     
     var client: UrlSessionLayerprotocol {
-        return UrlSessionLayer()
+        return UrlSessionLayer(session: SessionCall(binder: nil))
     }
     
     func serverRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
-        return await client.sendRequest(compose: compose, decoder: decoder)
+        return await self.client.sendRequest(compose: compose, decoder: decoder)
     }
     
     func amazonUploadFileRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
-        return await client.amazonFileUploadRequest(compose: compose, decoder: decoder)
+        return await self.client.amazonFileUploadRequest(compose: compose, decoder: decoder)
     }
 }

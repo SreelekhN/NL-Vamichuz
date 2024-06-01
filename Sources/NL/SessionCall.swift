@@ -9,20 +9,38 @@
 import Foundation
 
 protocol SessionCallProrocol {
-    func request(urlRequest: URLRequest) async -> SessionResponce
+    func dataRequest(urlRequest: URLRequest) async -> SessionResponce
 }
 
-final class SessionCall: SessionCallProrocol {
+protocol UploadProgressBinder: AnyObject {
+    func uploadprogressFractionCompleted(progress: Double?)
+}
+
+final class SessionCall: NSObject, SessionCallProrocol {
     
-    init() {}
+    private var progress: NSKeyValueObservation?
+    weak var binder: UploadProgressBinder?
     
-    func request(urlRequest: URLRequest) async -> SessionResponce {
+    init(binder: UploadProgressBinder? = nil) {
+        self.binder = binder
+    }
+    
+    func dataRequest(urlRequest: URLRequest) async -> SessionResponce {
         do {
-            let data = try await URLSession.shared.data(for: urlRequest)
+            let data = try await URLSession.shared.data(for: urlRequest, delegate: self)
             return (data, nil)
         } catch {
             print(error.localizedDescription)
             return (nil, error)
+        }
+    }
+}
+
+extension SessionCall: URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession, didCreateTask task: URLSessionTask) {
+        self.progress = task.progress.observe(\.fractionCompleted) { progress, value in
+            print("progress: ", progress.fractionCompleted)
+            self.binder?.uploadprogressFractionCompleted(progress: progress.fractionCompleted)
         }
     }
 }
