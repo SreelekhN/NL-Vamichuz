@@ -8,7 +8,7 @@
 
 public enum FinalResponse<success: Decodable>  {
     case success(success)
-    case failure(NetworkResponseStatus, success?)
+    case failure(String, success?)
     case sessionFail(String)
 }
 
@@ -24,32 +24,33 @@ struct SessionDecoder: SessionDecoderDelegate {
         guard let data = response.0?.0,
               let urlResponse = response.0?.1 as? HTTPURLResponse else {
             guard let errors = error as? URLError else {
-                return .sessionFail("Mapping Failed")
+                return .sessionFail(ErrorMessage.errorMappingFailed.rawValue)
             }
             return .sessionFail(errors.localizedDescription)
         }
-        debugPrint(data.prettyPrintedJSONString())
+        
+        debugPrint(data.prettyPrintedJsonString())
+        
         let result = self.handleNetworkResponse(response: urlResponse)
         switch result {
         case .success:
             let decoded = self.decode(data: data, decoder: decoder)
             guard let decoded else {
-                return .failure(NetworkResponseStatus.unableToDecode, nil)
+                return .failure(ErrorMessage.unableToDecode.rawValue, nil)
             }
             return .success(decoded)
         case .failure(let error):
             let decoded = self.decode(data: data, decoder: decoder)
-            return .failure(error, decoded)
+            return .failure(error.localizedDescription, decoded)
         }
     }
     
     private func handleNetworkResponse(response: HTTPURLResponse) -> ResultType<NetworkResponseStatus> {
         switch response.statusCode {
         case 200...299: return .success
-        case 401...500: return .failure(NetworkResponseStatus.authenticationError)
-        case 501...599: return .failure(NetworkResponseStatus.badRequest)
-        case 600: return .failure(NetworkResponseStatus.outdated)
-        default: return .failure(NetworkResponseStatus.failed)
+        default:
+            let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
+            return .failure(.failure(message: message))
         }
     }
     
@@ -72,10 +73,10 @@ enum ResultType<Error> {
 }
 
 extension Data {
-    func prettyPrintedJSONString() -> NSString {
+    func prettyPrintedJsonString() -> NSString {
         guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
               let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return "nil" }
+              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return "response is null" }
         return prettyPrintedString
     }
 }

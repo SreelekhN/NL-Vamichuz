@@ -31,7 +31,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     
     public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
         guard let urlRequest = self.requestFormer.getUrlRequest(compose: compose) else {
-            return .failure(NetworkResponseStatus.badRequest, nil)
+            return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest)
         let respose = self.decoderDelegate.decodeData(response: sessionResponse, decoder: decoder)
@@ -40,11 +40,11 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     
     public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
         guard let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose) else {
-            return .failure(NetworkResponseStatus.badRequest, nil)
+            return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest)
         guard sessionResponse.0 != nil else {
-            return .failure(NetworkResponseStatus.authenticationError, nil)
+            return .failure(sessionResponse.1?.localizedDescription ?? "", nil)
         }
         let object = AmazonS3UploadModel(code: 200)
         return .success(object as! T)
