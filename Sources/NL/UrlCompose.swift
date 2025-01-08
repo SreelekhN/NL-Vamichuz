@@ -13,6 +13,9 @@ public protocol HttpsRequestComposeProtocol {
     var params: Encodable? { get }
     var header: SessionHeaders { get }
     var data: Data? { get }
+    var cacheTimeout: CGFloat { get }
+    var shouldCache: Bool { get }
+    var forceRefresh: Bool { get }
 }
 
 public struct QuerySendable: Encodable {
@@ -42,5 +45,17 @@ public extension HttpsRequestComposeProtocol {
     
     var params: Encodable? {
         return nil
+    }
+    
+    var cacheTimeout: CGFloat {
+        return NLConfig.shared.cacheTimeout
+    }
+    
+    var shouldCache: Bool {
+        return false
+    }
+    
+    var forceRefresh: Bool {
+        return false
     }
 }
