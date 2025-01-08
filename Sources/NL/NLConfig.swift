@@ -16,4 +16,5 @@ public final class NLConfig {
     public var multiPartFormHeaders: [String: String] = [:]
     public var regularTimeOut = 1.0
     public var uploadTimeout = 30.0
+    public var cacheTimeout = 15.0
 }

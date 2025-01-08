@@ -33,7 +33,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
         guard let urlRequest = self.requestFormer.getUrlRequest(compose: compose) else {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
-        let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest)
+        let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
         let respose = self.decoderDelegate.decodeData(response: sessionResponse, decoder: decoder)
         return respose
     }
@@ -42,7 +42,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
         guard let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose) else {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
-        let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest)
+        let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
         guard sessionResponse.0 != nil else {
             return .failure(sessionResponse.1?.localizedDescription ?? "", nil)
         }

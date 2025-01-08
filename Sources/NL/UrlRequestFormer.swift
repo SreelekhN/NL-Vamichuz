@@ -17,7 +17,10 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
     private let header: AuthorizationHeaderProtocol
     private let isUploadTask: Bool
     
-    init(header: AuthorizationHeaderProtocol = AuthorizationHeader(), isUploadTask: Bool) {
+    init(
+        header: AuthorizationHeaderProtocol = AuthorizationHeader(),
+        isUploadTask: Bool
+    ) {
         self.header = header
         self.isUploadTask = isUploadTask
     }
@@ -31,6 +34,11 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         var request = URLRequest(url: url)
         request.httpMethod = compose.method.rawValue
         request.timeoutInterval = self.getTimeout()
+        
+        if compose.shouldCache {
+            request.cachePolicy = .returnCacheDataElseLoad
+        }
+        
         if let headers {
             request.allHTTPHeaderFields = headers
             debugPrint("sending header = \(headers)")
