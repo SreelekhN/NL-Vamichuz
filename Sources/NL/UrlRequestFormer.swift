@@ -45,22 +45,18 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         }
         debugPrint(url)
         
-        switch compose.method {
-        case .post:
-            if let encoded = compose.params {
-                do {
-                    let body = try JSONEncoder().encode(encoded)
-                    request.httpBody = body
-                } catch {}
-                printEncode(decodable: encoded)
-            }
-            
-            if let data = compose.data {
-                request.httpBody = data
-            }
-        default:
-            break
+        if let encoded = compose.params {
+            do {
+                let body = try JSONEncoder().encode(encoded)
+                request.httpBody = body
+            } catch {}
+            self.printEncode(decodable: encoded)
         }
+        
+        if let data = compose.data {
+            request.httpBody = data
+        }
+        
         return request
     }
     
@@ -84,7 +80,7 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
             guard let data = try? encoder.encode(decodable), let output = String(data: data, encoding: .utf8) else { return }
-            debugPrint("sending json = \(output)")
+            print("sending json = \(output)")
         }
     }
     
