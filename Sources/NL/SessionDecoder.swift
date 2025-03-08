@@ -41,7 +41,12 @@ struct SessionDecoder: SessionDecoderDelegate {
             return .success(decoded)
         case .failure(let error):
             let decoded = self.decode(data: data, decoder: decoder)
-            return .failure(error.localizedDescription, decoded)
+            switch error {
+            case .failure(let message):
+                return .failure(message, decoded)
+            default:
+                return .failure(error.localizedDescription, decoded)
+            }
         }
     }
     
