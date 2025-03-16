@@ -34,7 +34,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
-        let respose = self.decoderDelegate.decodeData(response: sessionResponse, decoder: decoder)
+        let respose = self.decoderDelegate.decodeData(response: sessionResponse, compose: compose, decoder: decoder)
         return respose
     }
     

@@ -16,6 +16,7 @@ public protocol HttpsRequestComposeProtocol {
     var cacheTimeout: CGFloat { get }
     var shouldCache: Bool { get }
     var forceRefresh: Bool { get }
+    var printContent: Bool { get }
 }
 
 public struct QuerySendable: Encodable {
@@ -57,5 +58,9 @@ public extension HttpsRequestComposeProtocol {
     
     var forceRefresh: Bool {
         return false
+    }
+    
+    var printContent: Bool {
+        return true
     }
 }

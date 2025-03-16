@@ -43,20 +43,24 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
             request.allHTTPHeaderFields = headers
             debugPrint("sending header = \(headers)")
         }
-        debugPrint(url)
         
+        if compose.printContent {
+            debugPrint(url)
+        }
         if let encoded = compose.params {
             do {
                 let body = try JSONEncoder().encode(encoded)
                 request.httpBody = body
             } catch {}
-            self.printEncode(decodable: encoded)
+            
+            if compose.printContent {
+                self.printEncode(decodable: encoded)
+            }
         }
         
         if let data = compose.data {
             request.httpBody = data
         }
-        
         return request
     }
     
@@ -70,7 +74,9 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         request.setValue("image/png", forHTTPHeaderField: "Content-Type")
         if let headers {
             request.allHTTPHeaderFields = headers
-            debugPrint("sending header = \(headers)")
+            if compose.printContent {
+                debugPrint("sending header = \(headers)")
+            }
         }
         return request
     }

@@ -55,7 +55,9 @@ final class SessionCall: NSObject, SessionCallProrocol {
             }
             return (data, nil)
         } catch {
-            print(error.localizedDescription)
+            if compose.printContent {
+                print(error.localizedDescription)
+            }
             return (nil, error)
         }
     }
@@ -96,7 +98,6 @@ final class SessionCall: NSObject, SessionCallProrocol {
 extension SessionCall: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, didCreateTask task: URLSessionTask) {
         self.progress = task.progress.observe(\.fractionCompleted) { progress, value in
-            print("progress: ", progress.fractionCompleted)
             self.binder?.uploadprogressFractionCompleted(progress: progress.fractionCompleted)
         }
     }

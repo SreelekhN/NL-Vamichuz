@@ -14,12 +14,12 @@ public enum FinalResponse<success: Decodable>  {
 
 import Foundation
 protocol SessionDecoderDelegate {
-    func decodeData<T: Decodable>(response: SessionResponce, decoder: T.Type) -> FinalResponse<T>
+    func decodeData<T: Decodable>(response: SessionResponce, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T>
 }
 
 struct SessionDecoder: SessionDecoderDelegate {
     
-    func decodeData<T: Decodable>(response: SessionResponce, decoder: T.Type) -> FinalResponse<T> {
+    func decodeData<T: Decodable>(response: SessionResponce, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T> {
         let error = response.1
         guard let data = response.0?.0,
               let urlResponse = response.0?.1 as? HTTPURLResponse else {
@@ -29,7 +29,9 @@ struct SessionDecoder: SessionDecoderDelegate {
             return .sessionFail(errors.localizedDescription)
         }
         
-        debugPrint(data.prettyPrintedJsonString())
+        if compose.printContent {
+            debugPrint(data.prettyPrintedJsonString())
+        }
         
         let result = self.handleNetworkResponse(response: urlResponse)
         switch result {
