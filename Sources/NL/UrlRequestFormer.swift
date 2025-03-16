@@ -41,7 +41,9 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         
         if let headers {
             request.allHTTPHeaderFields = headers
-            debugPrint("sending header = \(headers)")
+            if compose.printContent {
+                debugPrint("sending header = \(headers)")
+            }
         }
         
         if compose.printContent {
