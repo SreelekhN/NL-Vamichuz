@@ -1,5 +1,5 @@
 //
-//  MetadataType.swift
+//  MetaDataType.swift
 //  FuturePlus
 //
 //  Created by sreelekh N on 01/10/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum MetaDataType: Codable {
+public enum MetaDataType: Codable, Hashable {
     
     case stringValue(String)
     case intValue(Int)
