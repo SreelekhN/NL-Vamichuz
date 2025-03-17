@@ -6,15 +6,20 @@
 //
 
 import Foundation
-enum MetadataType: Decodable {
+
+public enum MetaDataType: Codable {
     
     case stringValue(String)
     case intValue(Int)
     case doubleValue(Double)
+    case floatValue(Float)
     case boolValue(Bool)
+    case arrayValue([MetaDataType])
+    case dictionaryValue([String: MetaDataType])
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
+        
         if let value = try? container.decode(String.self) {
             self = .stringValue(value)
             return
@@ -23,18 +28,37 @@ enum MetadataType: Decodable {
             self = .boolValue(value)
             return
         }
-        if let value = try? container.decode(Double.self) {
-            self = .doubleValue(value)
-            return
-        }
         if let value = try? container.decode(Int.self) {
             self = .intValue(value)
             return
         }
-        throw DecodingError.typeMismatch(MetadataType.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ValueWrapper"))
+        if let value = try? container.decode(Double.self) {
+            self = .doubleValue(value)
+            return
+        }
+        if let value = try? container.decode(Float.self) {
+            self = .floatValue(value)
+            return
+        }
+        if let value = try? container.decode([MetaDataType].self) {
+            self = .arrayValue(value)
+            return
+        }
+        if let value = try? container.decode([String: MetaDataType].self) {
+            self = .dictionaryValue(value)
+            return
+        }
+        
+        throw DecodingError.typeMismatch(
+            MetaDataType.self,
+            DecodingError.Context(
+                codingPath: decoder.codingPath,
+                debugDescription: "Unsupported type for MetadataType"
+            )
+        )
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
         case let .stringValue(value):
@@ -45,88 +69,79 @@ enum MetadataType: Decodable {
             try container.encode(value)
         case let .doubleValue(value):
             try container.encode(value)
+        case let .floatValue(value):
+            try container.encode(value)
+        case let .arrayValue(value):
+            try container.encode(value)
+        case let .dictionaryValue(value):
+            try container.encode(value)
         }
     }
     
     var rawValue: String {
-        var result: String
         switch self {
         case let .stringValue(value):
-            result = value
+            return value
         case let .boolValue(value):
-            result = String(value)
+            return String(value)
         case let .intValue(value):
-            result = String(value)
+            return String(value)
         case let .doubleValue(value):
-            result = String(Int(value))
+            return String(value)
+        case let .floatValue(value):
+            return String(value)
+        case let .arrayValue(value):
+            return value.map { $0.rawValue }.joined(separator: ", ")
+        case let .dictionaryValue(value):
+            return value.map { "\($0.key): \($0.value.rawValue)" }.joined(separator: ", ")
         }
-        return result
     }
     
     var intValue: Int? {
-        var result: Int?
         switch self {
         case let .stringValue(value):
-            result = Int(value)
+            return Int(value)
         case let .intValue(value):
-            result = value
+            return value
         case let .boolValue(value):
-            result = value ? 1 : 0
+            return value ? 1 : 0
         case let .doubleValue(value):
-            result = Int(value)
+            return Int(value)
+        case let .floatValue(value):
+            return Int(value)
+        default:
+            return nil
         }
-        return result
     }
     
     var boolValue: Bool? {
-        var result: Bool?
         switch self {
         case let .stringValue(value):
-            result = Bool(value)
+            return Bool(value)
         case let .boolValue(value):
-            result = value
+            return value
         case let .intValue(value):
-            result = Bool(truncating: value as NSNumber)
+            return value != 0
         case let .doubleValue(value):
-            result = Bool(truncating: value as NSNumber)
-        }
-        return result
-    }
-}
-
-enum MetadataArrayOrDictionary<type: Decodable>: Decodable {
-    case dictionary(type)
-    case array([type])
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let value = try? container.decode(type.self) {
-            self = .dictionary(value)
-            return
-        }
-        
-        if let value = try? container.decode([type].self) {
-            self = .array(value)
-            return
-        }
-        throw DecodingError.typeMismatch(MetadataArrayOrDictionary<type>.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for ValueWrapper"))
-    }
-    
-    var dictionary: type? {
-        switch self {
-        case let .dictionary(value):
-            return value
+            return value != 0.0
+        case let .floatValue(value):
+            return value != 0.0
         default:
             return nil
         }
     }
     
-    var array: [type]? {
-        switch self {
-        case let .array(value):
+    var arrayValue: [MetaDataType]? {
+        if case let .arrayValue(value) = self {
             return value
-        default:
-            return nil
         }
+        return nil
+    }
+    
+    var dictionaryValue: [String: MetaDataType]? {
+        if case let .dictionaryValue(value) = self {
+            return value
+        }
+        return nil
     }
 }
