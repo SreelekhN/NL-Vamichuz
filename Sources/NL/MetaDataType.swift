@@ -78,7 +78,7 @@ public enum MetaDataType: Codable, Hashable {
         }
     }
     
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case let .stringValue(value):
             return value
@@ -97,7 +97,7 @@ public enum MetaDataType: Codable, Hashable {
         }
     }
     
-    var intValue: Int? {
+    public var intValue: Int? {
         switch self {
         case let .stringValue(value):
             return Int(value)
@@ -114,7 +114,7 @@ public enum MetaDataType: Codable, Hashable {
         }
     }
     
-    var boolValue: Bool? {
+    public var boolValue: Bool? {
         switch self {
         case let .stringValue(value):
             return Bool(value)
@@ -131,14 +131,14 @@ public enum MetaDataType: Codable, Hashable {
         }
     }
     
-    var arrayValue: [MetaDataType]? {
+    public var arrayValue: [MetaDataType]? {
         if case let .arrayValue(value) = self {
             return value
         }
         return nil
     }
     
-    var dictionaryValue: [String: MetaDataType]? {
+    public var dictionaryValue: [String: MetaDataType]? {
         if case let .dictionaryValue(value) = self {
             return value
         }
