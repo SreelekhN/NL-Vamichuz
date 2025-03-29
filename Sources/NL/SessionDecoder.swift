@@ -54,7 +54,16 @@ struct SessionDecoder: SessionDecoderDelegate {
     
     private func handleNetworkResponse(response: HTTPURLResponse) -> ResultType<NetworkResponseStatus> {
         switch response.statusCode {
-        case 200...299: return .success
+        case 200...299:
+            return .success
+        case 401, 403, 419, 440:
+            let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
+            NotificationCenter.default.post(
+                name: .userSessionExpired,
+                object: nil,
+                userInfo: ["status" : response.statusCode, "message" : message]
+            )
+            return .failure(.failure(message: message))
         default:
             let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
             return .failure(.failure(message: message))
@@ -86,4 +95,8 @@ extension Data {
               let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return "response is null" }
         return prettyPrintedString
     }
+}
+
+extension Notification.Name {
+    static let userSessionExpired = Notification.Name("UserSessionExpiredNotification")
 }
