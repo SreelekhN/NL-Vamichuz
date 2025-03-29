@@ -96,7 +96,3 @@ extension Data {
         return prettyPrintedString
     }
 }
-
-extension Notification.Name {
-    static let userSessionExpired = Notification.Name("UserSessionExpiredNotification")
-}
