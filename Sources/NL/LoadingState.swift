@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public enum LoadingState: Equatable {
+public enum LoadingState: Equatable, Hashable {
     case initialState
     case pagination
     case finished
