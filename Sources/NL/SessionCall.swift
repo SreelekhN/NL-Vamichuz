@@ -47,7 +47,7 @@ final class SessionCall: NSObject, SessionCallProrocol {
     private func directApiCall(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponce {
         URLCache.shared.removeCachedResponse(for: urlRequest)
         do {
-            let data = try await URLSession.shared.data(for: urlRequest, delegate: self)
+            let data = try await NLConfig.shared.session.data(for: urlRequest)
             if compose.shouldCache {
                 if let response = data.1 as? HTTPURLResponse {
                     let cachedResponse = CachedURLResponse(response: response, data: data.0)

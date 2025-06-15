@@ -17,4 +17,11 @@ public final class NLConfig {
     public var regularTimeOut = 1.0
     public var uploadTimeout = 30.0
     public var cacheTimeout = 15.0
+    public var sessionConfiguration: URLSessionConfiguration!
+    
+    public var sessionDelegate: URLSessionDelegate? = nil
+    public var session: URLSession {
+        let config = self.sessionConfiguration ?? URLSessionConfiguration.default
+        return URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
+    }
 }
