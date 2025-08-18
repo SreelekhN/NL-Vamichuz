@@ -19,9 +19,17 @@ public final class NLConfig {
     public var cacheTimeout = 15.0
     public var sessionConfiguration: URLSessionConfiguration!
     
-    public weak var sessionDelegate: URLSessionDelegate? = nil
+    public weak var sessionDelegate: URLSessionDelegate? = nil {
+        didSet {
+            self._session = nil
+        }
+    }
+    private var _session: URLSession?
     public var session: URLSession {
+        if let s = self._session { return s }
         let config = self.sessionConfiguration ?? URLSessionConfiguration.default
-        return URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
+        let newSession = URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
+        self._session = newSession
+        return newSession
     }
 }
