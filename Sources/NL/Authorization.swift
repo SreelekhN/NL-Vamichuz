@@ -15,13 +15,19 @@ struct AuthorizationHeader: AuthorizationHeaderProtocol {
     
     func getMultiPartFormHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders {
         let auth = NLConfig.shared.multiPartFormHeaders
-        let combined = auth.merging(compose.header ?? [:]) { (_, new) in new }
-        return combined
+        if compose.header == [:] {
+            return auth
+        } else {
+            return compose.header ?? [:]
+        }
     }
     
     func getHeaders(compose: HttpsRequestComposeProtocol) -> SessionHeaders {
         let auth = NLConfig.shared.headers
-        let combined = auth.merging(compose.header ?? [:]) { (_, new) in new }
-        return combined
+        if compose.header == [:] {
+            return auth
+        } else {
+            return compose.header ?? [:]
+        }
     }
 }
