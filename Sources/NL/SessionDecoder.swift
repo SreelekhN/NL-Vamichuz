@@ -56,12 +56,15 @@ struct SessionDecoder: SessionDecoderDelegate {
         switch response.statusCode {
         case 200...299:
             return .success
-        case 401, 403, 419, 440:
+        case 400...499:
             let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
             NotificationCenter.default.post(
                 name: .userSessionExpired,
                 object: nil,
-                userInfo: ["status" : response.statusCode, "message" : message]
+                userInfo: [
+                    "status": response.statusCode,
+                    "message": message
+                ]
             )
             return .failure(.failure(message: message))
         default:
