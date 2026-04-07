@@ -97,6 +97,6 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
     
     private func getTimeout() -> Double {
         let now = self.isUploadTask ? NLConfig.shared.uploadTimeout : NLConfig.shared.regularTimeOut
-        return now * 60.0
+        return now
     }
 }

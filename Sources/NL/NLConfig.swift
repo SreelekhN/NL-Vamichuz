@@ -14,9 +14,13 @@ public final class NLConfig {
     public var baseUrl = ""
     public var headers: [String: String] = [:]
     public var multiPartFormHeaders: [String: String] = [:]
-    public var regularTimeOut = 1.0
-    public var uploadTimeout = 30.0
-    public var cacheTimeout = 15.0
+    
+    // MARK: All timeout is in seconds
+    public var regularTimeOut = 60.0
+    public var uploadTimeout = 120.0
+    public var cacheTimeout = 900.0
+    public var connectivityWaitTimeout = 2.0
+    
     public var sessionConfiguration: URLSessionConfiguration?
     public weak var tokenRefreshProvider: NLTokenRefreshProvider?
     public weak var sessionDelegate: URLSessionDelegate? = nil {
@@ -31,6 +35,8 @@ public final class NLConfig {
         defer { self.sessionLock.unlock() }
         if let s = self._session { return s }
         let config = self.sessionConfiguration ?? URLSessionConfiguration.default
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForResource = self.connectivityWaitTimeout
         let newSession = URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
         self._session = newSession
         return newSession
