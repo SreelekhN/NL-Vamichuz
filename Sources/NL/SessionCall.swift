@@ -68,7 +68,7 @@ final class SessionCall: NSObject, SessionCallProtocol {
     }
     
     private func shouldReloadData(for request: URLRequest, compose: HttpsRequestComposeProtocol) -> Bool {
-        let timeout: TimeInterval = 60.0 * compose.cacheTimeout
+        let timeout: TimeInterval = compose.cacheTimeout
         guard let cachedResponse = URLCache.shared.cachedResponse(for: request),
               let httpResponse = cachedResponse.response as? HTTPURLResponse,
               let dateHeader = httpResponse.allHeaderFields["Date"] as? String,
