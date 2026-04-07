@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol SessionCallProrocol {
-    func dataRequest(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponce
+protocol SessionCallProtocol {
+    func dataRequest(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponse
     func isUploadTask() -> Bool
 }
 
@@ -17,7 +17,7 @@ public protocol UploadProgressBinder: AnyObject {
     func uploadprogressFractionCompleted(progress: Double?)
 }
 
-final class SessionCall: NSObject, SessionCallProrocol {
+final class SessionCall: NSObject, SessionCallProtocol {
     
     private var progress: NSKeyValueObservation?
     weak var binder: UploadProgressBinder?
@@ -26,7 +26,7 @@ final class SessionCall: NSObject, SessionCallProrocol {
         self.binder = binder
     }
     
-    func dataRequest(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponce {
+    func dataRequest(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponse {
         if compose.forceRefresh {
             return await self.directApiCall(urlRequest: urlRequest, compose: compose)
         } else if compose.shouldCache {
@@ -44,7 +44,7 @@ final class SessionCall: NSObject, SessionCallProrocol {
         }
     }
     
-    private func directApiCall(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponce {
+    private func directApiCall(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponse {
         URLCache.shared.removeCachedResponse(for: urlRequest)
         do {
             let data = try await NLConfig.shared.session.data(for: urlRequest)
@@ -79,33 +79,30 @@ final class SessionCall: NSObject, SessionCallProrocol {
         return elapsedTime > timeout
     }
     
-    private func parseHttpDate(_ dateString: String) -> Date? {
+    private static let httpDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.date(from: dateString)
+        return formatter
+    }()
+
+    private func parseHttpDate(_ dateString: String) -> Date? {
+        return Self.httpDateFormatter.date(from: dateString)
     }
     
-    private func updateCache(
-        data: Data,
-        for request: URLRequest,
-        response: URLResponse
-    ) {
-        let cachedResponse = CachedURLResponse(response: response, data: data)
-        URLCache.shared.storeCachedResponse(cachedResponse, for: request)
-    }
+
 }
 
 extension SessionCall: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, didCreateTask task: URLSessionTask) {
-        self.progress = task.progress.observe(\.fractionCompleted) { progress, value in
-            self.binder?.uploadprogressFractionCompleted(progress: progress.fractionCompleted)
+        self.progress = task.progress.observe(\.fractionCompleted) { [weak self] progress, value in
+            self?.binder?.uploadprogressFractionCompleted(progress: progress.fractionCompleted)
         }
     }
 }
 
-typealias SessionResponce = (UrlSessionResponce, Error?)
-typealias UrlSessionResponce = (Data, URLResponse)?
+typealias SessionResponse = (UrlSessionResponse, Error?)
+typealias UrlSessionResponse = (Data, URLResponse)?
 
 
 

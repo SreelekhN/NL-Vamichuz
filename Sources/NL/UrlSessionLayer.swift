@@ -16,12 +16,12 @@ public protocol UrlSessionLayerProtocol {
 
 public struct UrlSessionLayer: UrlSessionLayerProtocol {
     
-    private let sessionDelegate: SessionCallProrocol
+    private let sessionDelegate: SessionCallProtocol
     private let decoderDelegate: SessionDecoderDelegate
     private let requestFormer: UrlRequestFormerProtocol
     
     init(
-        session: SessionCallProrocol,
+        session: SessionCallProtocol,
         decode: SessionDecoderDelegate = SessionDecoder()
     ) {
         self.sessionDelegate = session
@@ -34,8 +34,24 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
-        let respose = self.decoderDelegate.decodeData(response: sessionResponse, compose: compose, decoder: decoder)
-        return respose
+
+        // 419 = token expired → refresh once and retry
+        if let httpResponse = sessionResponse.0?.1 as? HTTPURLResponse,
+           httpResponse.statusCode == 419,
+           let provider = NLConfig.shared.tokenRefreshProvider {
+            let refreshed = await TokenRefreshHandler.shared.refreshIfNeeded(provider: provider)
+            if refreshed {
+                // Rebuild request from same compose — computed header/params
+                // properties are re-evaluated, picking up fresh tokens.
+                guard let retryRequest = self.requestFormer.getUrlRequest(compose: compose) else {
+                    return .failure(ErrorMessage.badRequest.rawValue, nil)
+                }
+                let retryResponse = await self.sessionDelegate.dataRequest(urlRequest: retryRequest, compose: compose)
+                return self.decoderDelegate.decodeData(response: retryResponse, compose: compose, decoder: decoder)
+            }
+        }
+
+        return self.decoderDelegate.decodeData(response: sessionResponse, compose: compose, decoder: decoder)
     }
     
     public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
