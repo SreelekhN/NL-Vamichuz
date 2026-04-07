@@ -10,21 +10,25 @@ public enum FinalResponse<success: Decodable>  {
     case success(success)
     case failure(String, success?)
     case sessionFail(String)
+    case cancelled
 }
 
 import Foundation
 protocol SessionDecoderDelegate {
-    func decodeData<T: Decodable>(response: SessionResponce, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T>
+    func decodeData<T: Decodable>(response: SessionResponse, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T>
 }
 
 struct SessionDecoder: SessionDecoderDelegate {
     
-    func decodeData<T: Decodable>(response: SessionResponce, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T> {
+    func decodeData<T: Decodable>(response: SessionResponse, compose: HttpsRequestComposeProtocol, decoder: T.Type) -> FinalResponse<T> {
         let error = response.1
         guard let data = response.0?.0,
               let urlResponse = response.0?.1 as? HTTPURLResponse else {
             guard let errors = error as? URLError else {
                 return .sessionFail(ErrorMessage.errorMappingFailed.rawValue)
+            }
+            if errors.code == .cancelled {
+                return .cancelled
             }
             return .sessionFail(errors.localizedDescription)
         }
@@ -36,13 +40,13 @@ struct SessionDecoder: SessionDecoderDelegate {
         let result = self.handleNetworkResponse(response: urlResponse)
         switch result {
         case .success:
-            let decoded = self.decode(data: data, decoder: decoder)
+            let decoded = self.decode(data: data, type: decoder)
             guard let decoded else {
                 return .failure(ErrorMessage.unableToDecode.rawValue, nil)
             }
             return .success(decoded)
         case .failure(let error):
-            let decoded = self.decode(data: data, decoder: decoder)
+            let decoded = self.decode(data: data, type: decoder)
             switch error {
             case .failure(let message):
                 return .failure(message, decoded)
@@ -56,7 +60,7 @@ struct SessionDecoder: SessionDecoderDelegate {
         switch response.statusCode {
         case 200...299:
             return .success
-        case 400...499:
+        case 401:
             let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
             NotificationCenter.default.post(
                 name: .userSessionExpired,
@@ -73,11 +77,10 @@ struct SessionDecoder: SessionDecoderDelegate {
         }
     }
     
-    private func decode<T: Decodable>(data: Data, decoder: T.Type) -> T? {
-        let decoder = JSONDecoder()
-        let parser = T.self
+    private func decode<T: Decodable>(data: Data, type: T.Type) -> T? {
+        let jsonDecoder = JSONDecoder()
         do {
-            let object = try decoder.decode(parser, from: data)
+            let object = try jsonDecoder.decode(type, from: data)
             return object
         } catch {
             debugPrint(error)
@@ -99,3 +102,4 @@ extension Data {
         return prettyPrintedString
     }
 }
+

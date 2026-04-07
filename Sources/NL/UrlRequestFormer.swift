@@ -53,8 +53,11 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
             do {
                 let body = try JSONEncoder().encode(encoded)
                 request.httpBody = body
-            } catch {}
-            
+            } catch {
+                debugPrint("NL: Failed to encode request body — \(error)")
+                return nil
+            }
+
             if compose.printContent {
                 self.printEncode(decodable: encoded)
             }
