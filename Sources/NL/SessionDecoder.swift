@@ -34,7 +34,7 @@ struct SessionDecoder: SessionDecoderDelegate {
         }
         
         if compose.printContent {
-            debugPrint(data.prettyPrintedJsonString())
+            print(data.prettyPrintedJsonString())
         }
         
         let result = self.handleNetworkResponse(response: urlResponse)
@@ -60,15 +60,12 @@ struct SessionDecoder: SessionDecoderDelegate {
         switch response.statusCode {
         case 200...299:
             return .success
-        case 401:
+        case 401, 403, 419, 440, 402:
             let message = HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
-            NotificationCenter.default.post(
-                name: .userSessionExpired,
-                object: nil,
-                userInfo: [
-                    "status": response.statusCode,
-                    "message": message
-                ]
+            NotificationCenter.default.post(name: .userSessionExpired, object: nil, userInfo: [
+                Constants.status: response.statusCode,
+                Constants.message: message
+            ]
             )
             return .failure(.failure(message: message))
         default:
@@ -83,7 +80,7 @@ struct SessionDecoder: SessionDecoderDelegate {
             let object = try jsonDecoder.decode(type, from: data)
             return object
         } catch {
-            debugPrint(error)
+            print(error)
             return nil
         }
     }
@@ -93,13 +90,3 @@ enum ResultType<Error> {
     case success
     case failure(Error)
 }
-
-extension Data {
-    func prettyPrintedJsonString() -> NSString {
-        guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
-              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return "response is null" }
-        return prettyPrintedString
-    }
-}
-

@@ -35,6 +35,8 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
         }
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
 
+        // MARK: Refresh token checking block
+        
         // 419 = token expired → refresh once and retry
         if let httpResponse = sessionResponse.0?.1 as? HTTPURLResponse,
            httpResponse.statusCode == 419,
@@ -50,7 +52,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
                 return self.decoderDelegate.decodeData(response: retryResponse, compose: compose, decoder: decoder)
             }
         }
-
+        
         return self.decoderDelegate.decodeData(response: sessionResponse, compose: compose, decoder: decoder)
     }
     

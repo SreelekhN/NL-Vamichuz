@@ -42,19 +42,19 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         if let headers {
             request.allHTTPHeaderFields = headers
             if compose.printContent {
-                debugPrint("sending header = \(headers)")
+                print("sending header = \(headers)")
             }
         }
         
         if compose.printContent {
-            debugPrint(url)
+            print(url)
         }
         if let encoded = compose.params {
             do {
                 let body = try JSONEncoder().encode(encoded)
                 request.httpBody = body
             } catch {
-                debugPrint("NL: Failed to encode request body — \(error)")
+                print("NL: Failed to encode request body — \(error)")
                 return nil
             }
 
@@ -80,7 +80,7 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         if let headers {
             request.allHTTPHeaderFields = headers
             if compose.printContent {
-                debugPrint("sending header = \(headers)")
+                print("sending header = \(headers)")
             }
         }
         return request
