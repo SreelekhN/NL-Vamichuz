@@ -27,8 +27,15 @@ public enum ErrorStates: Equatable, Hashable {
 }
 
 public struct EmptyStateContent: Equatable, Hashable {
-    let icon: String?
-    let title: String?
-    let subtitle: String?
-    let btnTitle: String?
+    public let icon: String?
+    public let title: String?
+    public let subtitle: String?
+    public let btnTitle: String?
+
+    public init(icon: String? = nil, title: String? = nil, subtitle: String? = nil, btnTitle: String? = nil) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+        self.btnTitle = btnTitle
+    }
 }
