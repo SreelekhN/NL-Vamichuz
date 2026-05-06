@@ -17,4 +17,18 @@ public enum LoadingState: Equatable, Hashable {
     case privateProfile
     case refresh
     case apartLoading
+    case errorStates(ErrorStates)
+}
+
+public enum ErrorStates: Equatable, Hashable {
+    case failure(String?)
+    case sessionFail(String?)
+    case emptyPage(EmptyStateContent)
+}
+
+public struct EmptyStateContent: Equatable, Hashable {
+    let icon: String?
+    let title: String?
+    let subtitle: String?
+    let btnTitle: String?
 }

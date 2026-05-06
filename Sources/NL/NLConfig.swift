@@ -19,7 +19,7 @@ public final class NLConfig {
     public var regularTimeOut = 60.0
     public var uploadTimeout = 120.0
     public var cacheTimeout = 900.0
-    public var connectivityWaitTimeout = 2.0
+    public var connectivityWaitTimeout = 60.0
     
     public var sessionConfiguration: URLSessionConfiguration?
     public weak var tokenRefreshProvider: NLTokenRefreshProvider?
