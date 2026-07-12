@@ -30,6 +30,11 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     }
     
     public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
+        if NLConfig.shared.securityCheckEnabled {
+            guard await DeviceIntegrityEvaluator.evaluateAsync() == false else {
+                return .failure(ErrorMessage.deviceIntegrityCompromised.rawValue, nil)
+            }
+        }
         guard let urlRequest = self.requestFormer.getUrlRequest(compose: compose) else {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
@@ -57,6 +62,11 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     }
     
     public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {
+        if NLConfig.shared.securityCheckEnabled {
+            guard await DeviceIntegrityEvaluator.evaluateAsync() == false else {
+                return .failure(ErrorMessage.deviceIntegrityCompromised.rawValue, nil)
+            }
+        }
         guard let urlRequest = self.requestFormer.getAmazonS3FileRequest(compose: compose) else {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
