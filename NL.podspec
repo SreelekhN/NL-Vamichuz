@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://www.linkedin.com/in/sreelekhn'
 
   s.ios.deployment_target = '15.0'
-  s.swift_version = '5.2'
+  s.swift_version = '5.9'
   s.source_files = 'Sources/NL/**/*'
   
 end
