@@ -38,6 +38,8 @@ final class NLTests: XCTestCase {
             print(success)
         case .sessionFail(let string):
             print(string)
+        case .cancelled:
+            print("cancelled")
         }
     }
 }

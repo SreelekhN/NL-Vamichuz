@@ -50,7 +50,12 @@ final class SessionCall: NSObject, SessionCallProtocol {
             let data = try await NLConfig.shared.session.data(for: urlRequest)
             if compose.shouldCache {
                 if let response = data.1 as? HTTPURLResponse {
-                    let cachedResponse = CachedURLResponse(response: response, data: data.0)
+                    let cachedResponse = CachedURLResponse(
+                        response: response,
+                        data: data.0,
+                        userInfo: nil,
+                        storagePolicy: .allowedInMemoryOnly
+                    )
                     URLCache.shared.storeCachedResponse(cachedResponse, for: urlRequest)
                 }
             }

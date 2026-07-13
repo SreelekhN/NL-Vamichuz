@@ -16,4 +16,5 @@ public enum ErrorMessage: String, Error {
     case unableToDecode = "We could not decode the response."
     case badRequest = "Response with bad request."
     case errorMappingFailed = "Error mapping failed."
+    case deviceIntegrityCompromised = "Request blocked: device failed integrity check."
 }

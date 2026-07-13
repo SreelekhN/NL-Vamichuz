@@ -23,6 +23,9 @@ public final class NLConfig {
     
     public var sessionConfiguration: URLSessionConfiguration?
     public weak var tokenRefreshProvider: NLTokenRefreshProvider?
+    public var securityCheckEnabled = true
+    public var debuggerCheckEnabled = false
+    public weak var deviceIntegrityProvider: NLDeviceIntegrityProvider?
     public weak var sessionDelegate: URLSessionDelegate? = nil {
         didSet {
             self._session = nil

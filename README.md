@@ -69,4 +69,15 @@ cursor
 
 here this is a graphql quiry, u can also pass params for regular rest api calls.
 
+Security:
+
+NL blocks outgoing requests when the device looks jailbroken or tampered with (see `NLConfig.securityCheckEnabled`, on by default). Related config:
+
+- `NLConfig.securityCheckEnabled` (default `true`) — gates every request behind a jailbreak/tamper check.
+- `NLConfig.deviceIntegrityProvider` — implement `NLDeviceIntegrityProvider` to plug in your own/additional checks.
+- `NLConfig.debuggerCheckEnabled` (default `false`) — opt-in debugger-attach check. Leave this off for debug builds (Xcode attaches a debugger to every run), only enable it for release builds if you want that extra signal.
+- `NLConfig.sessionDelegate` — implement `URLSessionDelegate` here for SSL/certificate pinning; NL doesn't ship pinning itself, this is the hook to add it.
+
+**App Transport Security**: NL relies on ATS to enforce HTTPS. Make sure your app's `Info.plist` does not set `NSAllowsArbitraryLoads` (or any blanket ATS exception) — doing so defeats transport security for all NL traffic regardless of the checks above.
+
 This is a work on progress, report any bug or features if u need
