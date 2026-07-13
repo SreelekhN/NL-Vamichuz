@@ -2,6 +2,8 @@
 //  DyldImageScanner.swift
 //  NL
 //
+//  Created by Sreelekh N on 12/07/26.
+//
 
 import Foundation
 import MachO
@@ -10,13 +12,13 @@ enum DyldImageScanner {
 
     // Obfuscated so hook/injection tool names don't sit in the binary as plain ASCII (see ObfuscatedString).
     static let obfuscatedDenyList: [[UInt8]] = [
-        [28, 40, 51, 62, 59, 29, 59, 62, 61, 63, 46], // FridaGadget
-        [60, 40, 51, 62, 59], // frida
-        [57, 35, 52, 48, 63, 57, 46], // cynject
-        [9, 9, 22, 17, 51, 54, 54, 9, 45, 51, 46, 57, 50], // SSLKillSwitch
-        [9, 47, 56, 41, 46, 40, 59, 46, 63, 22, 53, 59, 62, 63, 40], // SubstrateLoader
-        [54, 51, 56, 50, 53, 53, 49, 63, 40], // libhooker
-        [41, 47, 56, 41, 46, 51, 46, 47, 46, 63] // substitute
+        [28, 40, 51, 62, 59, 29, 59, 62, 61, 63, 46],
+        [60, 40, 51, 62, 59],
+        [57, 35, 52, 48, 63, 57, 46],
+        [9, 9, 22, 17, 51, 54, 54, 9, 45, 51, 46, 57, 50],
+        [9, 47, 56, 41, 46, 40, 59, 46, 63, 22, 53, 59, 62, 63, 40],
+        [54, 51, 56, 50, 53, 53, 49, 63, 40],
+        [41, 47, 56, 41, 46, 51, 46, 47, 46, 63]
     ]
 
     static var defaultDenyList: [String] {

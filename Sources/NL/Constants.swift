@@ -10,10 +10,8 @@ enum Constants {
     static let message = "message"
 
     enum Security {
-        static let mobileProvisionResourceName = "embedded"
-        static let mobileProvisionResourceType = "mobileprovision"
         static let dyldInsertLibrariesEnvKey = "DYLD_INSERT_LIBRARIES"
-        static let sandboxTestPath = "/private/jailbreak_test.txt"
+        static let sandboxTestPathPrefix = "/private/jailbreak_test"
         static let forkSymbolName = "fork"
         static let systemFrameworkPathPrefixes = ["/System/Library/", "/usr/lib/"]
         static let urlSessionDataTaskSelectorName = "dataTaskWithRequest:completionHandler:"

@@ -2,6 +2,8 @@
 //  HookDetector.swift
 //  NL
 //
+//  Created by Sreelekh N on 12/07/26.
+//
 
 import Foundation
 import Darwin
@@ -32,7 +34,10 @@ enum HookDetector {
         return Self.isPointerOutsideSystemImage(symbol)
     }
 
-    static func isPointerOutsideSystemImage(_ pointer: UnsafeRawPointer) -> Bool {
+    static func isPointerOutsideSystemImage(
+        _ pointer: UnsafeRawPointer,
+        dladdr: (UnsafeRawPointer, UnsafeMutablePointer<Dl_info>) -> Int32 = Darwin.dladdr
+    ) -> Bool {
         var info = Dl_info()
         guard dladdr(pointer, &info) != 0, let fnamePointer = info.dli_fname else {
             return true

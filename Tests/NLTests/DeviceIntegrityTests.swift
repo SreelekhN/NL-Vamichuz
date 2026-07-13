@@ -72,6 +72,23 @@ final class DeviceIntegrityTests: XCTestCase {
         let pointer = unsafeBitCast(fakeHookedImplementation, to: UnsafeRawPointer.self)
         XCTAssertTrue(HookDetector.isPointerOutsideSystemImage(pointer))
     }
+
+    func testHookDetectorFlagsWhenDladdrFails() {
+        let pointer = unsafeBitCast(fakeHookedImplementation, to: UnsafeRawPointer.self)
+        let failingDladdr: (UnsafeRawPointer, UnsafeMutablePointer<Dl_info>) -> Int32 = { _, _ in 0 }
+        XCTAssertTrue(HookDetector.isPointerOutsideSystemImage(pointer, dladdr: failingDladdr))
+    }
+
+    func testHookDetectorAllowsSystemImage() {
+        let pointer = unsafeBitCast(fakeHookedImplementation, to: UnsafeRawPointer.self)
+        let fakeSystemPath = strdup("/usr/lib/fake.dylib")
+        defer { free(fakeSystemPath) }
+        let systemDladdr: (UnsafeRawPointer, UnsafeMutablePointer<Dl_info>) -> Int32 = { _, info in
+            info.pointee.dli_fname = UnsafePointer(fakeSystemPath)
+            return 1
+        }
+        XCTAssertFalse(HookDetector.isPointerOutsideSystemImage(pointer, dladdr: systemDladdr))
+    }
 }
 
 private let fakeHookedImplementation: @convention(c) () -> Void = {}
