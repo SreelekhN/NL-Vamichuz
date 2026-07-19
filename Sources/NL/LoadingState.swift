@@ -18,6 +18,7 @@ public enum LoadingState: Equatable, Hashable {
     case refresh
     case apartLoading
     case errorStates(ErrorStates)
+    case paginationErrorStates(ErrorStates)
 }
 
 public enum ErrorStates: Equatable, Hashable {
