@@ -18,10 +18,12 @@ public protocol UploadProgressBinder: AnyObject {
 }
 
 final class SessionCall: NSObject, SessionCallProtocol {
-    
+
     private var progress: NSKeyValueObservation?
+    private var connectivityGraceTask: Task<Void, Never>?
+    private var timedOutWaitingForConnectivity = false
     weak var binder: UploadProgressBinder?
-    
+
     init(binder: UploadProgressBinder? = nil) {
         self.binder = binder
     }
@@ -46,8 +48,9 @@ final class SessionCall: NSObject, SessionCallProtocol {
     
     private func directApiCall(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponse {
         URLCache.shared.removeCachedResponse(for: urlRequest)
+        self.timedOutWaitingForConnectivity = false
         do {
-            let data = try await NLConfig.shared.session.data(for: urlRequest)
+            let data = try await NLConfig.shared.session.data(for: urlRequest, delegate: self)
             if compose.shouldCache {
                 if let response = data.1 as? HTTPURLResponse {
                     let cachedResponse = CachedURLResponse(
@@ -63,6 +66,9 @@ final class SessionCall: NSObject, SessionCallProtocol {
         } catch {
             if compose.printContent {
                 print(error.localizedDescription)
+            }
+            if self.timedOutWaitingForConnectivity {
+                return (nil, URLError(.notConnectedToInternet))
             }
             return (nil, error)
         }
@@ -103,6 +109,21 @@ extension SessionCall: URLSessionTaskDelegate {
         self.progress = task.progress.observe(\.fractionCompleted) { [weak self] progress, value in
             self?.binder?.uploadprogressFractionCompleted(progress: progress.fractionCompleted)
         }
+    }
+
+    func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
+        self.connectivityGraceTask = Task { [weak self] in
+            let graceTimeout = NLConfig.shared.connectivityGraceTimeout
+            try? await Task.sleep(nanoseconds: UInt64(graceTimeout * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            guard task.countOfBytesSent == 0, task.countOfBytesReceived == 0 else { return }
+            self?.timedOutWaitingForConnectivity = true
+            task.cancel()
+        }
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        self.connectivityGraceTask?.cancel()
     }
 }
 
