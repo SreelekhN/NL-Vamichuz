@@ -68,7 +68,10 @@ final class SessionCall: NSObject, SessionCallProtocol {
                 print(error.localizedDescription)
             }
             if self.timedOutWaitingForConnectivity {
-                return (nil, URLError(.notConnectedToInternet))
+                return (nil, URLError(
+                    .notConnectedToInternet,
+                    userInfo: [NSLocalizedDescriptionKey: ErrorMessage.notConnectedToInternet.rawValue]
+                ))
             }
             return (nil, error)
         }
