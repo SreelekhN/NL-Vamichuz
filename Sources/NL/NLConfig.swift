@@ -19,7 +19,6 @@ public final class NLConfig {
     public var regularTimeOut = 60.0
     public var uploadTimeout = 120.0
     public var cacheTimeout = 900.0
-    public var connectivityWaitTimeout = 60.0
     
     public var sessionConfiguration: URLSessionConfiguration?
     public weak var tokenRefreshProvider: NLTokenRefreshProvider?
@@ -41,7 +40,11 @@ public final class NLConfig {
         if let s = self._session { return s }
         let config = self.sessionConfiguration ?? URLSessionConfiguration.default
         config.waitsForConnectivity = true
-        config.timeoutIntervalForResource = self.connectivityWaitTimeout
+        // Hard ceiling on total request duration, independent of the per-request idle
+        // timeout (regularTimeOut/uploadTimeout) and of SessionCall's connectivity-grace
+        // check — without this a slow drip of bytes that keeps resetting the idle timer
+        // could otherwise hang for URLSession's own default of 7 days.
+        config.timeoutIntervalForResource = max(self.regularTimeOut, self.uploadTimeout) + 60
         let newSession = URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
         self._session = newSession
         return newSession
