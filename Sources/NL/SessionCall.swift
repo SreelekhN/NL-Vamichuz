@@ -19,11 +19,6 @@ public protocol UploadProgressBinder: AnyObject {
 
 final class SessionCall: NSObject, SessionCallProtocol {
 
-    /// How long a task may sit with zero bytes sent/received while `taskIsWaitingForConnectivity`
-    /// fires before we give up and surface it as "no internet" instead of waiting on
-    /// URLSession's own (much longer) resource-level timeout.
-    private static let connectivityGraceInterval: TimeInterval = 7.0
-
     private var progress: NSKeyValueObservation?
     private var connectivityGraceTask: Task<Void, Never>?
     private var timedOutWaitingForConnectivity = false
@@ -118,7 +113,8 @@ extension SessionCall: URLSessionTaskDelegate {
 
     func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
         self.connectivityGraceTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(Self.connectivityGraceInterval * 1_000_000_000))
+            let graceTimeout = NLConfig.shared.connectivityGraceTimeout
+            try? await Task.sleep(nanoseconds: UInt64(graceTimeout * 1_000_000_000))
             guard !Task.isCancelled else { return }
             guard task.countOfBytesSent == 0, task.countOfBytesReceived == 0 else { return }
             self?.timedOutWaitingForConnectivity = true
