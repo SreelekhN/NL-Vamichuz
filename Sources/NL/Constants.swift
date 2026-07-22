@@ -9,6 +9,12 @@ enum Constants {
     static let status = "status"
     static let message = "message"
 
+    enum Caching {
+        static let dateHeaderField = "Date"
+        static let httpDateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        static let httpDateLocaleIdentifier = "en_US_POSIX"
+    }
+
     enum Security {
         static let dyldInsertLibrariesEnvKey = "DYLD_INSERT_LIBRARIES"
         static let sandboxTestPathPrefix = "/private/jailbreak_test"

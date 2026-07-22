@@ -85,7 +85,7 @@ final class SessionCall: NSObject, SessionCallProtocol {
         let timeout: TimeInterval = compose.cacheTimeout
         guard let cachedResponse = URLCache.shared.cachedResponse(for: request),
               let httpResponse = cachedResponse.response as? HTTPURLResponse,
-              let dateHeader = httpResponse.allHeaderFields["Date"] as? String,
+              let dateHeader = httpResponse.allHeaderFields[Constants.Caching.dateHeaderField] as? String,
               let cachedDate = self.parseHttpDate(dateHeader) else {
             return true
         }
@@ -95,8 +95,8 @@ final class SessionCall: NSObject, SessionCallProtocol {
     
     private static let httpDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = Constants.Caching.httpDateFormat
+        formatter.locale = Locale(identifier: Constants.Caching.httpDateLocaleIdentifier)
         return formatter
     }()
 
