@@ -31,9 +31,14 @@ struct JailbreakDetector {
     static let defaultSignals: [(name: String, check: () -> Bool)] = [
         ("suspiciousPaths", Self.suspiciousPathsExist),
         ("sandboxWrite", Self.canWriteOutsideSandbox),
-        ("forkSucceeds", Self.forkSucceeds),
         ("dyldInsertLibraries", Self.hasDyldInsertLibraries)
     ]
+
+    /// Not included in `defaultSignals`: calling raw `fork()` in a live multithreaded process
+    /// carries a small inherent stability risk (contention on malloc/ObjC-runtime/dyld atfork
+    /// locks) regardless of how it's guarded. Opt in explicitly if that tradeoff is acceptable:
+    /// `JailbreakDetector().isJailbroken(signals: JailbreakDetector.defaultSignals + [("forkSucceeds", JailbreakDetector.forkSucceeds)])`
+    static let forkSignal: (name: String, check: () -> Bool) = ("forkSucceeds", Self.forkSucceeds)
 
     static func suspiciousPathsExist() -> Bool {
         suspiciousPaths.contains { FileManager.default.fileExists(atPath: $0) }
