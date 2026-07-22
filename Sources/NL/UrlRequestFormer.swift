@@ -33,7 +33,7 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
         guard let url = urlConverted.toUrl else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = compose.method.rawValue
-        request.timeoutInterval = self.getTimeout()
+        request.timeoutInterval = NLConfig.shared.regularTimeOut
         
         if compose.shouldCache {
             request.cachePolicy = .returnCacheDataElseLoad
@@ -93,10 +93,5 @@ struct UrlRequestFormer: UrlRequestFormerProtocol {
             guard let data = try? encoder.encode(decodable), let output = String(data: data, encoding: .utf8) else { return }
             print("sending json = \(output)")
         }
-    }
-    
-    private func getTimeout() -> Double {
-        let now = NLConfig.shared.regularTimeOut
-        return now
     }
 }

@@ -41,7 +41,7 @@ public final class NLConfig {
         let config = self.sessionConfiguration ?? URLSessionConfiguration.default
         config.waitsForConnectivity = true
         // Overall ceiling on total request duration; otherwise defaults to 7 days.
-        config.timeoutIntervalForResource = self.regularTimeOut + 60
+        config.timeoutIntervalForResource = self.regularTimeOut
         let newSession = URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
         self._session = newSession
         return newSession
