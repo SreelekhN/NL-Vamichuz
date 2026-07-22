@@ -17,7 +17,6 @@ public final class NLConfig {
     
     // MARK: All timeout is in seconds
     public var regularTimeOut = 60.0
-    public var uploadTimeout = 120.0
     public var cacheTimeout = 900.0
     public var connectivityGraceTimeout = 7.0
     
@@ -42,7 +41,7 @@ public final class NLConfig {
         let config = self.sessionConfiguration ?? URLSessionConfiguration.default
         config.waitsForConnectivity = true
         // Overall ceiling on total request duration; otherwise defaults to 7 days.
-        config.timeoutIntervalForResource = max(self.regularTimeOut, self.uploadTimeout) + 60
+        config.timeoutIntervalForResource = self.regularTimeOut
         let newSession = URLSession(configuration: config, delegate: self.sessionDelegate, delegateQueue: nil)
         self._session = newSession
         return newSession

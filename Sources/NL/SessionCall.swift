@@ -10,7 +10,6 @@ import Foundation
 
 protocol SessionCallProtocol {
     func dataRequest(urlRequest: URLRequest, compose: HttpsRequestComposeProtocol) async -> SessionResponse
-    func isUploadTask() -> Bool
 }
 
 public protocol UploadProgressBinder: AnyObject {
@@ -75,10 +74,6 @@ final class SessionCall: NSObject, SessionCallProtocol {
             }
             return (nil, error)
         }
-    }
-    
-    func isUploadTask() -> Bool {
-        return self.binder != nil
     }
     
     private func shouldReloadData(for request: URLRequest, compose: HttpsRequestComposeProtocol) -> Bool {
