@@ -28,7 +28,9 @@ public final class NLConfig {
     public weak var deviceIntegrityProvider: NLDeviceIntegrityProvider?
     public weak var sessionDelegate: URLSessionDelegate? = nil {
         didSet {
+            self.sessionLock.lock()
             self._session = nil
+            self.sessionLock.unlock()
         }
     }
     private let sessionLock = NSLock()
