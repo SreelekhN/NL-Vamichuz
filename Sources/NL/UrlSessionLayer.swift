@@ -26,7 +26,7 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
     ) {
         self.sessionDelegate = session
         self.decoderDelegate = decode
-        self.requestFormer = UrlRequestFormer(isUploadTask: session.isUploadTask())
+        self.requestFormer = UrlRequestFormer()
     }
     
     public func sendRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {

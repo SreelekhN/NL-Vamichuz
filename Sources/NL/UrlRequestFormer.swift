@@ -15,14 +15,9 @@ protocol UrlRequestFormerProtocol {
 struct UrlRequestFormer: UrlRequestFormerProtocol {
     
     private let header: AuthorizationHeaderProtocol
-    private let isUploadTask: Bool
-    
-    init(
-        header: AuthorizationHeaderProtocol = AuthorizationHeader(),
-        isUploadTask: Bool
-    ) {
+
+    init(header: AuthorizationHeaderProtocol = AuthorizationHeader()) {
         self.header = header
-        self.isUploadTask = isUploadTask
     }
     
     func getUrlRequest(compose: HttpsRequestComposeProtocol) -> URLRequest? {
