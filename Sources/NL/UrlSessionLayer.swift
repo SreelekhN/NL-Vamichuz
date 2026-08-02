@@ -38,10 +38,11 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
         guard let urlRequest = self.requestFormer.getUrlRequest(compose: compose) else {
             return .failure(ErrorMessage.badRequest.rawValue, nil)
         }
+        let requestStart = Date()
         let sessionResponse = await self.sessionDelegate.dataRequest(urlRequest: urlRequest, compose: compose)
 
         // MARK: Refresh token checking block
-        
+
         // 419 = token expired → refresh once and retry
         if let httpResponse = sessionResponse.0?.1 as? HTTPURLResponse,
            httpResponse.statusCode == 419,
@@ -54,11 +55,35 @@ public struct UrlSessionLayer: UrlSessionLayerProtocol {
                     return .failure(ErrorMessage.badRequest.rawValue, nil)
                 }
                 let retryResponse = await self.sessionDelegate.dataRequest(urlRequest: retryRequest, compose: compose)
+                self.reportPerformance(urlRequest: retryRequest, response: retryResponse, start: requestStart)
                 return self.decoderDelegate.decodeData(response: retryResponse, compose: compose, decoder: decoder)
             }
         }
-        
+
+        self.reportPerformance(urlRequest: urlRequest, response: sessionResponse, start: requestStart)
         return self.decoderDelegate.decodeData(response: sessionResponse, compose: compose, decoder: decoder)
+    }
+
+    private func reportPerformance(urlRequest: URLRequest, response: SessionResponse, start: Date) {
+        guard let observer = NLConfig.shared.requestPerformanceObserver else { return }
+        let duration = Date().timeIntervalSince(start)
+        let urlString = urlRequest.url?.absoluteString ?? ""
+        observer.requestDidComplete(url: urlString, duration: duration, outcome: Self.outcome(for: response))
+    }
+
+    private static func outcome(for response: SessionResponse) -> NLRequestOutcome {
+        if let urlError = response.1 as? URLError {
+            switch urlError.code {
+            case .cancelled: return .cancelled
+            case .timedOut: return .timeout
+            default: return .failure
+            }
+        }
+        if response.1 != nil { return .failure }
+        if let httpResponse = response.0?.1 as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+            return .failure
+        }
+        return .success
     }
     
     public func amazonFileUploadRequest<T: Decodable>(compose: HttpsRequestComposeProtocol, decoder: T.Type) async -> FinalResponse<T> {

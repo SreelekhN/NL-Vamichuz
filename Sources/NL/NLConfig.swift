@@ -25,6 +25,7 @@ public final class NLConfig {
     public var securityCheckEnabled = true
     public var debuggerCheckEnabled = false
     public weak var deviceIntegrityProvider: NLDeviceIntegrityProvider?
+    public weak var requestPerformanceObserver: NLRequestPerformanceObserver?
     public weak var sessionDelegate: URLSessionDelegate? = nil {
         didSet {
             self.sessionLock.lock()
