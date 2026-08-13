@@ -20,6 +20,7 @@ enum HookDetector {
         return Self.isPointerOutsideSystemImage(UnsafeRawPointer(method_getImplementation(method)))
     }
 
+    @Sendable
     static func isURLSessionDataTaskHooked() -> Bool {
         Self.isImplementationHooked(
             class: URLSession.self,
@@ -27,6 +28,7 @@ enum HookDetector {
         )
     }
 
+    @Sendable
     static func isSecTrustEvaluateHooked() -> Bool {
         guard let symbol = dlsym(UnsafeMutableRawPointer(bitPattern: -2), Constants.Security.secTrustEvaluateSymbolName) else {
             return false

@@ -12,7 +12,7 @@ final class DeviceIntegrityTests: XCTestCase {
     }
 
     func testJailbreakDetectorFlagsWhenAnySignalPositive() {
-        let signals: [(name: String, check: () -> Bool)] = [
+        let signals: [(name: String, check: @Sendable () -> Bool)] = [
             ("clean", { false }),
             ("compromised", { true })
         ]
@@ -20,7 +20,7 @@ final class DeviceIntegrityTests: XCTestCase {
     }
 
     func testJailbreakDetectorCleanWhenAllSignalsNegative() {
-        let signals: [(name: String, check: () -> Bool)] = [
+        let signals: [(name: String, check: @Sendable () -> Bool)] = [
             ("clean1", { false }),
             ("clean2", { false })
         ]

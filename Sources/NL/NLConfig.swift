@@ -6,8 +6,13 @@
 //
 
 import Foundation
-public final class NLConfig {
-    
+
+// Configured once at app launch (before any network call runs), then only read from
+// arbitrary contexts afterward — the compiler can't see that ordering guarantee, so this
+// opts out of automatic Sendable checking rather than forcing every NLConfig access
+// call site onto @MainActor.
+public final class NLConfig: @unchecked Sendable {
+
     public static let shared = NLConfig()
     private init() {}
     

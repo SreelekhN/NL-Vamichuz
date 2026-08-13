@@ -10,8 +10,11 @@ import Foundation
 enum DeviceIntegrityEvaluator {
 
     private static let lock = NSLock()
-    private static var cachedResult: Bool?
-    static var overrideForTesting: Bool?
+    // Both guarded by `lock` (or, for `overrideForTesting`, only ever set once before
+    // any concurrent access begins in test setup) — safe under manual synchronization
+    // that the compiler can't otherwise verify.
+    nonisolated(unsafe) private static var cachedResult: Bool?
+    nonisolated(unsafe) static var overrideForTesting: Bool?
 
     static func evaluate() -> Bool {
         if let override = Self.overrideForTesting {

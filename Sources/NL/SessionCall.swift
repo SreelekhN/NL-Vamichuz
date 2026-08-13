@@ -16,7 +16,10 @@ public protocol UploadProgressBinder: AnyObject {
     func uploadprogressFractionCompleted(progress: Double?)
 }
 
-final class SessionCall: NSObject, SessionCallProtocol {
+// URLSessionTaskDelegate requires Sendable conformance; this instance's mutable state is
+// only ever touched from the URLSession delegate queue and the awaiting caller of the same
+// request, never shared concurrently across callers.
+final class SessionCall: NSObject, SessionCallProtocol, @unchecked Sendable {
 
     private var progress: NSKeyValueObservation?
     private var connectivityGraceTask: Task<Void, Never>?

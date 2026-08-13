@@ -28,7 +28,7 @@ struct JailbreakDetector {
         Self.obfuscatedSuspiciousPaths.map(ObfuscatedString.decode)
     }
 
-    static let defaultSignals: [(name: String, check: () -> Bool)] = [
+    static let defaultSignals: [(name: String, check: @Sendable () -> Bool)] = [
         ("suspiciousPaths", Self.suspiciousPathsExist),
         ("sandboxWrite", Self.canWriteOutsideSandbox),
         ("dyldInsertLibraries", Self.hasDyldInsertLibraries)
@@ -38,12 +38,14 @@ struct JailbreakDetector {
     /// carries a small inherent stability risk (contention on malloc/ObjC-runtime/dyld atfork
     /// locks) regardless of how it's guarded. Opt in explicitly if that tradeoff is acceptable:
     /// `JailbreakDetector().isJailbroken(signals: JailbreakDetector.defaultSignals + [("forkSucceeds", JailbreakDetector.forkSucceeds)])`
-    static let forkSignal: (name: String, check: () -> Bool) = ("forkSucceeds", Self.forkSucceeds)
+    static let forkSignal: (name: String, check: @Sendable () -> Bool) = ("forkSucceeds", Self.forkSucceeds)
 
+    @Sendable
     static func suspiciousPathsExist() -> Bool {
         suspiciousPaths.contains { FileManager.default.fileExists(atPath: $0) }
     }
 
+    @Sendable
     static func canWriteOutsideSandbox() -> Bool {
         let path = "\(Constants.Security.sandboxTestPathPrefix)_\(UUID().uuidString).txt"
         do {
@@ -55,6 +57,7 @@ struct JailbreakDetector {
         }
     }
 
+    @Sendable
     static func forkSucceeds() -> Bool {
         // `fork()` is marked unavailable by the Swift overlay (Apple pushes threads/posix_spawn
         // instead), but a sandboxed iOS app should never be able to fork regardless of API path —
@@ -77,6 +80,7 @@ struct JailbreakDetector {
         return false
     }
 
+    @Sendable
     static func hasDyldInsertLibraries() -> Bool {
         guard let value = ProcessInfo.processInfo.environment[Constants.Security.dyldInsertLibrariesEnvKey] else {
             return false
@@ -84,7 +88,7 @@ struct JailbreakDetector {
         return !value.isEmpty
     }
 
-    func isJailbroken(signals: [(name: String, check: () -> Bool)] = Self.defaultSignals) -> Bool {
+    func isJailbroken(signals: [(name: String, check: @Sendable () -> Bool)] = Self.defaultSignals) -> Bool {
         signals.contains { $0.check() }
     }
 }

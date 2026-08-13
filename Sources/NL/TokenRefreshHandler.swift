@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol NLTokenRefreshProvider: AnyObject {
+public protocol NLTokenRefreshProvider: AnyObject, Sendable {
     func refreshToken() async -> Bool
 }
 

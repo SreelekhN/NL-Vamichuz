@@ -11,12 +11,12 @@ struct TamperDetector {
     func isTampered(
         scanner: ([String]) -> [String] = DyldImageScanner.suspiciousImageNames,
         denyList: [String] = DyldImageScanner.defaultDenyList,
-        hookChecks: [() -> Bool] = Self.defaultHookChecks
+        hookChecks: [@Sendable () -> Bool] = Self.defaultHookChecks
     ) -> Bool {
         !scanner(denyList).isEmpty || hookChecks.contains { $0() }
     }
 
-    static let defaultHookChecks: [() -> Bool] = [
+    static let defaultHookChecks: [@Sendable () -> Bool] = [
         HookDetector.isURLSessionDataTaskHooked,
         HookDetector.isSecTrustEvaluateHooked
     ]
